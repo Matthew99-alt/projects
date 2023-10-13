@@ -11,12 +11,7 @@ public class DailyForecast {
     @JsonProperty("Day")
     private Day day;
 
-    DailyForecast(String date,Day day){
-        this.date = date;
-        this.day = day;
-    }
-
-    DailyForecast(){
+    public DailyForecast() {
 
     }
 
