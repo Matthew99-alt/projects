@@ -1,21 +1,17 @@
 package matvey.ApiWeather;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class ApiWeather {
-    public void getWeather() throws IOException, JsonProcessingException {
+    public List<DailyForecast> getWeather() throws IOException {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -37,13 +33,15 @@ public class ApiWeather {
         Request requestHttp = new Request.Builder()
                 .url(url)
                 .build();
-        String jsonResponse = client.newCall(requestHttp).execute().body().string();
-        jsonResponse = jsonResponse.substring(jsonResponse.indexOf("["));
-        jsonToAnObject(jsonResponse);
+        String weatherResponseJson = client.newCall(requestHttp).execute().body().string();
+        weatherResponseJson = weatherResponseJson.substring(weatherResponseJson.indexOf("["));
+
+        return weatherResponseToObject(weatherResponseJson);
     }
-    public static void jsonToAnObject(String json) throws JsonProcessingException {
+
+    private List<DailyForecast> weatherResponseToObject(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<DailyForecast> weather = objectMapper.readValue(json, new TypeReference<List<DailyForecast>>(){});
-        System.out.println(weather.toString());
+        return objectMapper.readValue(json, new TypeReference<>() {
+        });
     }
 }
