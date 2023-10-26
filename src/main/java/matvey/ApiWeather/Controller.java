@@ -8,9 +8,9 @@ import matvey.ApiWeather.enums.Periods;
 
 public class Controller {
     //объект класса apiWeather
-    ApiWeather apiWeather = new ApiWeather();
+    private final ApiWeather apiWeather = new ApiWeather();
     //маппа вариантов
-    Map<Integer, Functionality> variantResult = new HashMap<>();
+    private final Map<Integer, Functionality> variantResult = new HashMap<>();
     //???
     public Controller() {
         variantResult.put(1, Functionality.GET_CURRENT_WEATHER);
@@ -19,7 +19,7 @@ public class Controller {
 
     //метод для проверки числа
     public void onUserInput(String input) throws IOException {
-        //ползователь вводит число
+        //пользователь вводит число
         int command = Integer.parseInt(input);
         //проверяем на наличие введённого номера
         if (!variantResult.containsKey(command)) {

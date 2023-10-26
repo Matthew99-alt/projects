@@ -14,12 +14,13 @@ public class Temperature {
 
 
     public Temperature(@JsonProperty("Minimum") Minimum min,
-                       @JsonProperty("Maximum") Maximum max){
+                       @JsonProperty("Maximum") Maximum max) {
         this.min = min;
         this.max = max;
     }
 
-    public Temperature(){}
+    public Temperature() {
+    }
 
     @Override
     public String toString() {

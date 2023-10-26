@@ -9,11 +9,12 @@ public class Minimum {
     double value;
 
     public Minimum(@JsonProperty("Value")
-                   double value){
+                   double value) {
         this.value = value;
     }
 
-    public Minimum(){}
+    public Minimum() {
+    }
 
     @Override
     public String toString() {

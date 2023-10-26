@@ -11,12 +11,12 @@ public class DailyForecasts {
     @JsonProperty("Temperature")
     private Temperature temperature;
 
-    DailyForecasts(String date, Temperature temperature){
+    DailyForecasts(String date, Temperature temperature) {
         this.date = date;
         this.temperature = temperature;
     }
 
-    DailyForecasts(){
+    DailyForecasts() {
     }
 
     @Override

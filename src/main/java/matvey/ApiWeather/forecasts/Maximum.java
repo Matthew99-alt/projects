@@ -10,11 +10,12 @@ public class Maximum {
     double value;
 
     public Maximum(@JsonProperty("Value")
-                   double value){
+                   double value) {
         this.value = value;
     }
 
-    public Maximum(){}
+    public Maximum() {
+    }
 
     @Override
     public String toString() {

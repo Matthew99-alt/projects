@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import matvey.ApiWeather.enums.Periods;
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 
-public class ApiWeather{
+public class ApiWeather {
 
     //поля для конструкции запросов
     private static final String BASE_HOST = "dataservice.accuweather.com";
@@ -19,7 +22,7 @@ public class ApiWeather{
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     //получаем погоду
-    public void getWeather(Periods period) throws IOException{
+    public void getWeather(Periods period) throws IOException {
         //находим ключ города
         String cityKey = detectCityKey();
         //создаём запрос
@@ -27,11 +30,11 @@ public class ApiWeather{
 
         String days = "";
         //определяем прогноз на 5 дней или на один
-        if(period.equals(Periods.NOW)) {
-            days="1day";
+        if (period.equals(Periods.NOW)) {
+            days = "1day";
         }
-        if(period.equals(Periods.FIVE_DAYS)) {
-            days="5day";
+        if (period.equals(Periods.FIVE_DAYS)) {
+            days = "5day";
         }
         // Сегментированное построение URL
         HttpUrl url = new HttpUrl.Builder()
@@ -54,6 +57,7 @@ public class ApiWeather{
         //переводим строку в объект
         jsonToAnObject(jsonResponse);
     }
+
     //поиск ключа города
     public String detectCityKey() throws IOException {
         String selectedCity = AppInstance.getInstance().getSelectedCity();
@@ -91,10 +95,12 @@ public class ApiWeather{
 
         return objectMapper.readTree(jsonResponse).get(0).at("/Key").asText();
     }
+
     //метод для конвертации j-сона в объект
     private void jsonToAnObject(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        WeatherResponse weather = objectMapper.readValue(json, new TypeReference<>(){});
+        WeatherResponse weather = objectMapper.readValue(json, new TypeReference<>() {
+        });
         System.out.println(weather.toString());
     }
 }
