@@ -10,13 +10,15 @@ public class Headline {
     private String text;
 
     public Headline(@JsonProperty("Text")
-                    String text) {
+                    String text){
         this.text = text;
     }
 
-    public Headline() {
-    }
+    public Headline(){}
 
+    public String getText(){
+        return text;
+    }
     @Override
     public String toString() {
         return " Headline " +

@@ -6,14 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Minimum {
     @JsonProperty("Value")
-    double value;
+    private double value;
 
     public Minimum(@JsonProperty("Value")
-                   double value) {
+                   double value){
         this.value = value;
     }
 
-    public Minimum() {
+    public Minimum(){}
+
+    public double getValue(){
+        return value;
     }
 
     @Override

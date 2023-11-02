@@ -30,7 +30,6 @@ public class UseInt {
             }
 
             try {
-                //Почему одна строчка умещена в отдельный метод?
                 notifyController(userInput);
             } catch (IOException e) {
                 e.printStackTrace();

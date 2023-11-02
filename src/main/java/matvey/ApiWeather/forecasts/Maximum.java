@@ -7,14 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Maximum {
 
     @JsonProperty("Value")
-    double value;
+    private double value;
 
     public Maximum(@JsonProperty("Value")
-                   double value) {
+                   double value){
         this.value = value;
     }
 
-    public Maximum() {
+    public Maximum(){}
+
+    public double getValue() {
+        return value;
     }
 
     @Override
