@@ -4,7 +4,6 @@ package matvey.ApiWeather;
 public class AppInstance {
     //поле выступающее в роли конструктора
     private static AppInstance INSTANCE;
-    //поля города и АПИ
     private String selectedCity = null;
     private final String API_KEY = "SWq7PliXGktYGYOht5C9ShKYK7E21v6H";
 
