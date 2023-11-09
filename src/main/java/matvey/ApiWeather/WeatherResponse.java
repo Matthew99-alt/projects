@@ -22,7 +22,7 @@ public class WeatherResponse {
     //создаём объект из json-строки
     @JsonCreator
     public WeatherResponse(@JsonProperty("Headline") Headline headline,
-                           @JsonProperty("DailyForecasts") DailyForecasts[] dailyForecast){
+                           @JsonProperty("DailyForecasts") DailyForecasts[] dailyForecast) {
         this.headline = headline;
         this.dailyForecast = dailyForecast;
     }
@@ -31,19 +31,19 @@ public class WeatherResponse {
         return headline.getText();
     }
 
-    public int getDailyForecastsLength(){
+    public int getDailyForecastsLength() {
         return dailyForecast.length;
     }
 
-    public String getDailyForecastsDate(int i){
+    public String getDailyForecastsDate(int i) {
         return dailyForecast[i].getDate();
     }
 
-    public double getDailyForecastsMin(int i){
+    public double getDailyForecastsMin(int i) {
         return dailyForecast[i].getTemperatureMin();
     }
 
-    public double getDailyForecastsMax(int i){
+    public double getDailyForecastsMax(int i) {
         return dailyForecast[i].getTemperatureMax();
     }
 

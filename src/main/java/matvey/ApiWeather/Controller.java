@@ -3,6 +3,7 @@ package matvey.ApiWeather;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import matvey.ApiWeather.enums.Functionality;
 import matvey.ApiWeather.enums.Periods;
 
@@ -11,7 +12,7 @@ public class Controller {
     ApiWeather apiWeather = new ApiWeather();
     //маппа вариантов
     Map<Integer, Functionality> variantResult = new HashMap<>();
-    //???
+
     public Controller() {
         variantResult.put(1, Functionality.GET_CURRENT_WEATHER);
         variantResult.put(2, Functionality.GET_WEATHER_IN_NEXT_5_DAYS);
@@ -35,10 +36,12 @@ public class Controller {
                 break;
         }
     }
+
     //getter'ы и setter'ы
     public void getCurrentWeather() throws IOException {
         apiWeather.getWeather(Periods.NOW);
     }
+
     public void getWeatherIn5Days() throws IOException {
         apiWeather.getWeather(Periods.FIVE_DAYS);
     }
