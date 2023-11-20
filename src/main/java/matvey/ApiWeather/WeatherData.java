@@ -28,71 +28,52 @@ public class WeatherData {
                     "text STRING, date Date NOT NULL, min DOUBLE NOT NULL, max DOUBLE NOT NULL);");
 
             query = connection.prepareStatement("INSERT INTO weather (text, date, min, max) VALUES (?,?,?,?)");
-            if (Objects.equals(days, "5day")) {
 
+            if (Objects.equals(days, "5day")) {
                 // Демонстрация prepared statement
                 for (int i = 0; i < weather.getDailyForecastsLength(); i++) {
                     fillTheDataBase(i, weather);
                 }
-                query.executeBatch();
-
             } else {
-
                 fillTheDataBase(0, weather);
-                query.executeBatch();
-
             }
+            query.executeBatch();
+
             ResultSet resultSet = table.executeQuery("SELECT * FROM weather");
             while (resultSet.next()) {
-
-            showTheDataBase(resultSet);
-
+                showTheDataBase(resultSet);
             }
         } catch (ClassNotFoundException | SQLException e) {
-
             e.printStackTrace();
-
         } finally {
             try {
-
                 table.close();
-
             } catch (SQLException throwable) {
-
                 throwable.printStackTrace();
-
             }
             try {
-
                 connection.close();
-
             } catch (SQLException throwable) {
-
                 throwable.printStackTrace();
-
             }
         }
 
     }
 
     private void fillTheDataBase(int i, WeatherResponse weather) throws SQLException {
-
         query.setString(1, weather.getHeadlineText());
         query.setString(2, weather.getDailyForecastsDate(i).replace("T", " "));
         query.setDouble(3, weather.getDailyForecastsMin(i));
         query.setDouble(4, weather.getDailyForecastsMax(i));
         query.addBatch();
-
     }
 
     private void showTheDataBase(ResultSet resultSet) throws SQLException {
-
         System.out.println(
                 resultSet.getString(1) + " | " +
                         resultSet.getString("date") + " | " +
                         resultSet.getDouble("min") + " | " +
                         resultSet.getDouble("max") + " | "
         );
-
     }
 }

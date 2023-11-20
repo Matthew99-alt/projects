@@ -1,33 +1,30 @@
 package matvey.Streams;
 
-import examples.streams_10.Demo6;
+import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class Student{
-    String name;
-    List<String> course;
-    public Student(String name, List<String> course){
+public class Student {
+
+    @Getter
+    private final String name;
+
+    private final List<Course> courses;
+
+    public Student(String name, List<Course> courses) {
         this.name = name;
-        this.course = course;
+        this.courses = courses;
     }
 
-    public String getName() {
-        return name;
+    public List<Course> getAllCourses() {
+        return courses;
     }
 
-    public String getCourses(){
-        return course.toString();
-    }
-    public String getAllCourses() {
-        return Arrays.toString(course.toArray());
-    }
-
-    public int getCoursesLength(){
-        return course.size();
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", courses=" + courses +
+                '}';
     }
 }

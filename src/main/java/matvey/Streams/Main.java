@@ -1,22 +1,38 @@
 package matvey.Streams;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
-
     public static void main(String[] args) {
+        List<Student> students = Data.getStudentsList(); // в данном случае класс Data содержит тестовые данные, у вас они будут свои
+        Course randomCourse = Data.getRandomCourse(); // ваша реализация подачи случайного курса, можно просто создать объект и его передавать
+        System.out.println(getUnicsCourses(students));
+        System.out.println(inquisitiveStudents(students));
+        System.out.println(getStudentsFromCourse(students, randomCourse));
+    }
 
-        Student styopa = new Student("Стёпа", Arrays.asList("археология","музыка"));
-        Student arkadii = new Student("Аркадий", Arrays.asList("экономика","археология","музыка"));
-        Student genadii = new Student("Генадий", Collections.singletonList("психология"));
-        Student evgenii = new Student("Евгений", Arrays.asList("программирование","археология","музыка","экономика"));
-        Student sergay = new Student("Сергей", Collections.singletonList("музыка"));
+    // 1. Написать функцию, принимающую список Student и возвращающую список уникальных курсов, на которые подписаны студенты.
+    public static List<Course> getUnicsCourses(List<Student> students) {
+        return students.stream()
+                .flatMap(student -> student.getAllCourses().stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
-        List<Student> Student = Arrays.asList(styopa,arkadii,genadii,evgenii,sergay);
+    // 2. Написать функцию, принимающую на вход список Student и возвращающую список из трех самых любознательных (любознательность определяется количеством курсов).
+    public static List<Student> inquisitiveStudents(List<Student> students) {
+        return students.stream()
+                .sorted((s1, s2) -> (s2.getAllCourses().size()) - (s1.getAllCourses().size()))
+                .limit(3)
+                .collect(Collectors.toList());
+    }
 
-        Streams strimchik = new Streams();
-        strimchik.curiosStudents(Student);
+    // 3. Написать функцию, принимающую на вход список Student и экземпляр Course, возвращающую список студентов, которые посещают этот курс.
+    public static List<Student> getStudentsFromCourse(List<Student> students, Course course) {
+        System.out.println("Ищем студентов проходящих курс " + course);
+        return students.stream()
+                .filter(student -> student.getAllCourses().contains(course))
+                .collect(Collectors.toList());
     }
 }
