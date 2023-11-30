@@ -37,7 +37,7 @@ public class Main {
 
         Stream<User> integerStream = Stream.of(anatolii, aleksey, levin);
 
-        System.out.println(someConsumer.consume(integerStream));
+        System.out.println(someConsumer.consumeExample(integerStream));
 
     }
 }
