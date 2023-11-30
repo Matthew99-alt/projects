@@ -1,9 +1,11 @@
 package matvey.TreeSetUserAndConsumer.TreeSet;
 
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 //класс электрогитар
+@RequiredArgsConstructor
 @ToString
 public class Guitars implements Comparable<Guitars> {
     //звукосниматели электрогитары
@@ -12,15 +14,6 @@ public class Guitars implements Comparable<Guitars> {
     private final String developer;
     private final String model;
     private final Integer price;
-
-    public Guitars(String pickups, Integer stringsCount, String developer, String model, Integer price) {
-        this.pickups = pickups;
-        this.stringsCount = stringsCount;
-        this.developer = developer;
-        this.model = model;
-        this.price = price;
-    }
-
 
     @Override
     public int compareTo(@NotNull Guitars comparableObject) {
