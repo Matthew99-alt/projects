@@ -15,11 +15,9 @@ import java.util.LinkedList;
  */
 
 public class MyCustomThreadPool {
-    private LinkedList<Runnable> tasks = new LinkedList<>();
+    private final LinkedList<Runnable> tasks = new LinkedList<>();
     private volatile boolean isShutdown = false;
-    private Thread[] threads;
-
-    private final Object monitor = new Object();
+    private final Thread[] threads;
 
     public MyCustomThreadPool(Integer numberOfThreads) {
         threads = new Thread[numberOfThreads];
@@ -32,18 +30,18 @@ public class MyCustomThreadPool {
 
     public void shutdown() {
         isShutdown = true;
-        synchronized (monitor) {
-            monitor.notifyAll();
+        synchronized (tasks) {
+            tasks.notifyAll();
         }
     }
 
     public void execute(Runnable task) {
-        synchronized (monitor) {
+        synchronized (tasks) {
             if (isShutdown) {
                 throw new IllegalStateException("ThreadPool is already shutdown");
             }
             tasks.addLast(task);
-            monitor.notifyAll();
+            tasks.notifyAll();
         }
     }
 
@@ -52,10 +50,10 @@ public class MyCustomThreadPool {
         public void run() {
             while (true) {
                 Runnable task;
-                synchronized (monitor) {
+                synchronized (tasks) {
                     while (tasks.isEmpty() && !isShutdown) {
                         try {
-                            monitor.wait();
+                            tasks.wait();
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             return;
