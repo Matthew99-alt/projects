@@ -3,14 +3,16 @@ package matvey;
 import java.util.LinkedList;
 
 public class ThreadPool {
-    private LinkedList<Runnable> tasks; // + final и будет монитор)
+    private final LinkedList<Runnable> tasks; // + final и будет монитор)
     private boolean isShutdown;
     private final Object monitor = new Object();
+    private final int capacity;
 
     //TODO: В качестве аргументов конструктора пулу передается его емкость (количество рабочих потоков).
-    public ThreadPool(LinkedList<Runnable> tasks, boolean shutdown) {
+    public ThreadPool(LinkedList<Runnable> tasks, boolean shutdown, int capacity) {
         this.tasks = tasks;
         this.isShutdown = shutdown;
+        this.capacity = capacity;
         startThreads();
     }
 
@@ -23,75 +25,30 @@ public class ThreadPool {
 
     //TODO: тут создаются потоки в цикле, исходя из параметра конструктора
     private void startThreads() {
-        Thread thread1 = new Thread(() -> {
-            // пересмотреть условие, не просто И - ИЛИ
-            // а что ты делаешь? может условие только на… завершение? ожидание?
-            // что делать если задач нет, но и пул еще не выключают?
-            while (!tasks.isEmpty() || !isShutdown) {
-                try {
-                    this.takeTask().run();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            //TODO: почему внутри потока ВАЖНО отлавливать исключение возможное внутри метода run() ?
-            // разве это не то же самое что выше?
-            // тут ок, вопрос что должно быть выше
-            try {
-                this.takeTask().run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread2 = new Thread(() -> {
-            while (!tasks.isEmpty() || !isShutdown)
-                while (!tasks.isEmpty() || !isShutdown) {
+        for(int i = 0; i<capacity; i++) {
+            new Thread(() -> {
+                // пересмотреть условие, не просто И - ИЛИ
+                // а что ты делаешь? может условие только на… завершение? ожидание?
+                // что делать если задач нет, но и пул еще не выключают?
+                while (true) {
+                    Runnable task;
                     try {
-                        this.takeTask().run();
+                        task = takeTask();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    if(task==null){
+                        break;
+                    }
+                    task.run();
                 }
-            try {
-                this.takeTask().run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread3 = new Thread(() -> {
-            while (!tasks.isEmpty() || !isShutdown) {
-                try {
-                    this.takeTask().run();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            try {
-                this.takeTask().run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread4 = new Thread(() -> {
-            while (!tasks.isEmpty() || !isShutdown) {
-                try {
-                    this.takeTask().run();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            try {
-                this.takeTask().run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
 
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        thread4.start();
+                //TODO: почему внутри потока ВАЖНО отлавливать исключение возможное внутри метода run() ?
+                // разве это не то же самое что выше?
+                // тут ок, вопрос что должно быть выше
+
+            }).start();
+        }
     }
 
     public void execute(Runnable task) {
@@ -99,8 +56,9 @@ public class ThreadPool {
             if (!isShutdown) {
                 tasks.add(task);
                 monitor.notify();
-            } else {
-                throw new IllegalStateException(); // не молчи Матвей)
+            }
+            if (isShutdown) {
+                throw new IllegalStateException("А всё, опоздали! Больше не принимаем!"); // не молчи Матвей)
             }
 
             /*
@@ -115,34 +73,21 @@ public class ThreadPool {
 
     public Runnable takeTask() throws InterruptedException {
         synchronized (monitor) {
-            if (!isShutdown) {
-                while (tasks.isEmpty()) {
-                    monitor.wait();
-                }
-                Runnable takenTask = tasks.getLast();// есть метод сразу с удалением
-                tasks.remove(takenTask);
-                return takenTask;
-            } else {
-                while (!tasks.isEmpty()) {
-                    Runnable takenTask = tasks.getFirst();
-                    tasks.remove(takenTask);
-                    return takenTask;
-                }
+            while (tasks.isEmpty() && !isShutdown) {
+                monitor.wait();
+            }
+            if (!tasks.isEmpty()) {
+                return tasks.removeFirst();
             }
         }
-        return () -> {
-            System.out.println(Thread.currentThread().getName() + " Работа окончена. Выключаюсь...");
-        };
+        return null;
     }
 
     public static void main(String[] args) {
 
         LinkedList<Runnable> tasks = new LinkedList<Runnable>();
 
-        ThreadPool threadPool = new ThreadPool(tasks, false);
-        ;
-
-//        threadPool.startThreads();
+        ThreadPool threadPool = new ThreadPool(tasks, false,2);
 
         threadPool.execute(() -> {
             System.out.println("Робим" + Thread.currentThread().getName());
